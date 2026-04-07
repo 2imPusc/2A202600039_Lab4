@@ -1,0 +1,112 @@
+[
+    {
+        "id": "Test 1",
+        "input": "Xin chào! Tôi đang muốn đi du lịch nhưng chưa biết đi đâu.",
+        "expectation": "Chào hỏi, hỏi thêm thông tin, không gọi tool.",
+        "agent_response": "Xin chào! Rất vui được hỗ trợ bạn trong việc lên kế hoạch du lịch. Bạn có thể cho tôi biết một số thông tin như điểm khởi hành, ngân sách, số đêm dự kiến và nếu bạn có ý tưởng về điểm đến nào không? Điều này sẽ giúp tôi tìm kiếm những lựa chọn phù hợp nhất cho bạn.",
+        "tools_used": [],
+        "status": "PASS",
+        "timestamp": "2026-04-07T16:37:58.958695"
+    },
+    {
+        "id": "Test 2",
+        "input": "Tìm giúp tôi chuyến bay từ Hà Nội đi Đà Nẵng",
+        "expectation": "Gọi search_flights, liệt kê 4 chuyến bay.",
+        "agent_response": "Dưới đây là danh sách các chuyến bay từ Hà Nội đi Đà Nẵng:\n\n1. **Vietnam Airlines**\n   - Hạng vé: Phổ thông\n   - Thời gian: 06:00 -> 07:20\n   - Giá: 1,450,000₫\n\n2. **Vietnam Airlines**\n   - Hạng vé: Thương gia\n   - Thời gian: 14:00 -> 15:20\n   - Giá: 2,800,000₫\n\n3. **VietJet Air**\n   - Hạng vé: Phổ thông\n   - Thời gian: 08:30 -> 09:50\n   - Giá: 890,000₫\n\n4. **Bamboo Airways**\n   - Hạng vé: Phổ thông\n   - Thời gian: 11:00 -> 12:20\n   - Giá: 1,200,000₫\n\nNếu bạn cần thêm thông tin hoặc muốn đặt chuyến bay nào, hãy cho tôi biết!",
+        "tools_used": [
+            "search_flights"
+        ],
+        "status": "PASS",
+        "timestamp": "2026-04-07T16:38:01.424124"
+    },
+    {
+        "id": "Test 3",
+        "input": "Tôi ở Hà Nội, muốn đi Phú Quốc 2 đêm, budget 5 triệu. Tư vấn giúp!",
+        "expectation": "Chuỗi: Flight -> Budget -> Hotel -> Tổng hợp.",
+        "agent_response": "Chào bạn! Dưới đây là kế hoạch du lịch của bạn từ Hà Nội đến Phú Quốc trong 2 đêm với ngân sách 5 triệu đồng:\n\n### Chi tiết chuyến bay:\n- **Hãng hàng không**: VietJet Air\n- **Thời gian**: 16:00 -> 18:15\n- **Giá vé**: 1,100,000₫\n\n### Khách sạn gợi ý:\n- **Tên**: Lahana Resort\n- **Sao**: 3*\n- **Khu vực**: Dương Đông\n- **Đánh giá**: 4.0\n- **Giá**: 800,000₫/đêm\n- **Tổng chi phí cho 2 đêm**: 1,600,000₫\n\n### Bảng chi phí chi tiết:\n| Mục chi phí       | Số tiền (₫)   |\n|-------------------|----------------|\n| Vé máy bay        | 1,100,000      |\n| Khách sạn         | 1,600,000      |\n| **Tổng chi**      | **2,700,000**  |\n| Ngân sách ban đầu | 5,000,000      |\n| **Còn lại**       | **2,300,000**  |\n\n### Một số gợi ý du lịch:\n- Bạn có thể tham quan các bãi biển nổi tiếng như Bãi Sao, Bãi Trường.\n- Đừng quên thưởng thức hải sản tươi ngon tại các nhà hàng địa phương.\n- Nếu có thời gian, hãy thử tham gia các hoạt động thể thao dưới nước như lặn biển hay lướt ván.\n\nNếu bạn cần thêm thông tin hoặc muốn thay đổi kế hoạch, hãy cho tôi biết nhé!",
+        "tools_used": [
+            "search_flights",
+            "calculate_budget",
+            "search_hotels",
+            "calculate_budget"
+        ],
+        "status": "PASS",
+        "timestamp": "2026-04-07T16:38:07.342895"
+    },
+    {
+        "id": "Test 4",
+        "input": "Tôi muốn đặt khách sạn",
+        "expectation": "Hỏi lại thông tin thiếu, chưa gọi tool ngay.",
+        "agent_response": "Xin vui lòng cho tôi biết tên thành phố mà bạn muốn đặt khách sạn, và nếu có, bạn có thể cung cấp mức giá tối đa mỗi đêm mà bạn dự định chi tiêu không?",
+        "tools_used": [],
+        "status": "PASS",
+        "timestamp": "2026-04-07T16:38:20.999707"
+    },
+    {
+        "id": "Test 5",
+        "input": "Giải giúp tôi bài tập lập trình Python về linked list",
+        "expectation": "Từ chối lịch sự, chỉ hỗ trợ du lịch.",
+        "agent_response": "Xin lỗi, nhưng tôi không thể giúp bạn với bài tập lập trình. Tuy nhiên, nếu bạn cần thông tin về du lịch hoặc lên kế hoạch cho chuyến đi, tôi rất sẵn lòng hỗ trợ!",
+        "tools_used": [],
+        "status": "PASS",
+        "timestamp": "2026-04-07T16:38:22.687442"
+    },
+    {
+        "id": "Test 6",
+        "input": "Tìm vé từ Hà Nội đi Đà Nẵng vào thứ 7",
+        "expectation": "Gọi search_flights với travel_date='thứ 7', giá vé tăng 20% so với ngày thường (VD: VietJet 890k → 1,068,000₫).",
+        "agent_response": "Dưới đây là danh sách các chuyến bay từ Hà Nội đi Đà Nẵng vào thứ 7:\n\n1. **Vietnam Airlines (phổ thông)**: \n   - Thời gian: 06:00 -> 07:20 \n   - Giá: 1,740,000₫\n\n2. **Vietnam Airlines (thương gia)**: \n   - Thời gian: 14:00 -> 15:20 \n   - Giá: 3,360,000₫\n\n3. **VietJet Air (phổ thông)**: \n   - Thời gian: 08:30 -> 09:50 \n   - Giá: 1,068,000₫\n\n4. **Bamboo Airways (phổ thông)**: \n   - Thời gian: 11:00 -> 12:20 \n   - Giá: 1,440,000₫\n\nNếu bạn cần thêm thông tin hoặc muốn đặt vé, hãy cho tôi biết!",
+        "tools_used": [
+            "search_flights"
+        ],
+        "status": "PASS",
+        "timestamp": "2026-04-07T16:38:24.565310"
+    },
+    {
+        "id": "Test 7",
+        "input": "Tìm vé buổi sáng từ Hà Nội đi Đà Nẵng",
+        "expectation": "Gọi search_flights, chỉ liệt kê/ưu tiên các chuyến trước 12:00 (06:00, 08:30, 11:00), chọn rẻ nhất là VietJet 08:30.",
+        "agent_response": "Dưới đây là danh sách các chuyến bay buổi sáng từ Hà Nội đi Đà Nẵng:\n\n1. **Vietnam Airlines**\n   - Thời gian: 06:00 -> 07:20\n   - Giá: 1,450,000₫\n\n2. **VietJet Air**\n   - Thời gian: 08:30 -> 09:50\n   - Giá: 890,000₫\n\n3. **Bamboo Airways**\n   - Thời gian: 11:00 -> 12:20\n   - Giá: 1,200,000₫\n\nNếu bạn cần thêm thông tin hoặc muốn đặt vé, hãy cho tôi biết!",
+        "tools_used": [
+            "search_flights"
+        ],
+        "status": "PASS",
+        "timestamp": "2026-04-07T16:38:31.195409"
+    },
+    {
+        "id": "Test 8",
+        "input": "Tìm vé hạng thương gia từ Hà Nội đi Hồ Chí Minh",
+        "expectation": "Gọi search_flights với flight_class='business', chỉ trả về đúng 1 chuyến Vietnam Airlines 18:00 giá 3,200,000₫.",
+        "agent_response": "Tôi đã tìm thấy chuyến bay hạng thương gia từ Hà Nội đi Hồ Chí Minh như sau:\n\n- **Hãng hàng không**: Vietnam Airlines\n- **Thời gian**: 18:00 -> 20:10\n- **Giá**: 3,200,000₫\n\nNếu bạn cần thêm thông tin hoặc muốn đặt vé, hãy cho tôi biết nhé!",
+        "tools_used": [
+            "search_flights"
+        ],
+        "status": "PASS",
+        "timestamp": "2026-04-07T16:38:35.682660"
+    },
+    {
+        "id": "Test 9",
+        "input": "Tôi ở Hà Nội muốn đi Phú Quốc 3 đêm, budget 1.5 triệu. Tư vấn giúp!",
+        "expectation": "Gọi search_flights, phát hiện không có vé khả thi (rẻ nhất 1.1M + 3×200k = 1.7M > 1.5M), thông báo ngân sách tối thiểu cần thiết và DỪNG, không gọi search_hotels.",
+        "agent_response": "Chào bạn! Dưới đây là thông tin chuyến bay từ Hà Nội đến Phú Quốc cho kế hoạch của bạn:\n\n### Chi tiết chuyến bay:\n1. **Hãng hàng không**: VietJet Air\n   - **Thời gian**: 16:00 -> 18:15\n   - **Giá**: 1,100,000₫\n\n### Tính toán ngân sách:\n- **Tổng ngân sách**: 1,500,000₫\n- **Giá vé máy bay**: 1,100,000₫\n- **Ngân sách còn lại cho khách sạn**: 1,500,000₫ - 1,100,000₫ = 400,000₫\n- **Chi phí tối thiểu cho khách sạn (3 đêm)**: 3 × 200,000₫ = 600,000₫\n\nVới ngân sách hiện tại, bạn sẽ cần ít nhất 1,700,000₫ (1,100,000₫ + 600,000₫) để có thể thực hiện chuyến đi này. Do đó, kế hoạch này không khả thi với ngân sách 1,500,000₫.\n\nNếu bạn muốn, tôi có thể giúp bạn tìm kiếm các chuyến bay khác hoặc điều chỉnh kế hoạch để phù hợp hơn với ngân sách của bạn. Bạn có muốn thử không?",
+        "tools_used": [
+            "search_flights"
+        ],
+        "status": "PASS",
+        "timestamp": "2026-04-07T16:38:38.714739"
+    },
+    {
+        "id": "Test 10",
+        "input": "Tôi ở Hà Nội muốn đi Đà Nẵng 2 đêm, budget 4 triệu, muốn đi chuyến buổi sáng",
+        "expectation": "Chuỗi đầy đủ: search_flights (lọc sáng, chọn VietJet 08:30 890k) -> calculate_budget -> search_hotels -> calculate_budget tổng hợp.",
+        "agent_response": "Chào bạn! Dưới đây là kế hoạch chuyến đi của bạn từ Hà Nội đến Đà Nẵng trong 2 đêm với ngân sách 4 triệu đồng:\n\n### Chi tiết chuyến bay:\n- **Hãng hàng không**: VietJet Air\n- **Thời gian**: 08:30 -> 09:50\n- **Giá vé**: 890,000₫\n\n### Khách sạn gợi ý:\n- **Tên**: Memory Hostel\n- **Sao**: 2*\n- **Khu vực**: Hải Châu\n- **Đánh giá**: 4.6\n- **Giá**: 250,000₫/đêm\n\n### Bảng chi phí chi tiết:\n| Mục chi phí       | Số tiền      |\n|-------------------|--------------|\n| Vé máy bay        | 890,000₫    |\n| Khách sạn (2 đêm) | 500,000₫    |\n| **Tổng chi**      | **1,390,000₫** |\n| **Ngân sách ban đầu** | **4,000,000₫** |\n| **Còn lại**       | **2,610,000₫** |\n\n### Một số gợi ý du lịch:\n- Đà Nẵng nổi tiếng với bãi biển Mỹ Khê, bạn có thể dành thời gian thư giãn tại đây.\n- Tham quan cầu Rồng và thưởng thức ẩm thực địa phương tại các quán ăn ven biển.\n\nNếu bạn cần thêm thông tin hoặc muốn thay đổi kế hoạch, hãy cho tôi biết nhé!",
+        "tools_used": [
+            "search_flights",
+            "calculate_budget",
+            "search_hotels",
+            "calculate_budget"
+        ],
+        "status": "PASS",
+        "timestamp": "2026-04-07T16:38:45.430597"
+    }
+]
