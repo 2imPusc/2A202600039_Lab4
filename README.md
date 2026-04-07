@@ -6,31 +6,44 @@ TravelBuddy là một AI Agent tư vấn du lịch nội địa Việt Nam, đư
 
 ---
 
+## Mục Lục
+
+- [Kiến Trúc Graph](#kiến-trúc-graph)
+- [Công Cụ (Tools)](#công-cụ-tools)
+- [Tính Năng](#tính-năng)
+- [Thiết Kế System Prompt](#thiết-kế-system-prompt)
+- [Cấu Trúc Thư Mục](#cấu-trúc-thư-mục)
+- [Test Cases](#test-cases)
+- [Chạy Chương Trình](#chạy-chương-trình)
+- [Ví Dụ Hội Thoại](#ví-dụ-hội-thoại)
+
+---
+
 ## Kiến Trúc Graph
 
 TravelBuddy sử dụng vòng lặp **ReAct (Reason + Act)** của LangGraph:
 
 ```
-START
-  │
-  ▼
-┌─────────────┐
-│  agent_node │  ← LLM (GPT-4o-mini) + System Prompt
-└──────┬──────┘
-       │
-       ▼ tools_condition
-  ┌────┴────┐
-  │         │
-  │ tool?   │ no → END
-  │ yes     │
-  └────┬────┘
-       │
-       ▼
-┌─────────────┐
-│  ToolNode   │  ← search_flights / search_hotels / calculate_budget
-└──────┬──────┘
-       │
-       └──────────────► (quay lại agent_node)
+                        START
+                          │
+                          ▼
+          ┌───────────────────────────────┐
+    ┌────►│         agent_node            │  LLM (GPT-4o-mini) + System Prompt
+    │     └───────────────┬───────────────┘
+    │                     │
+    │                     ▼ tools_condition
+    │         ┌───────────┴───────────┐
+    │  có tool_calls               không có tool_calls
+    │         │                        │
+    │         ▼                        ▼
+    │ ┌───────────────┐             [END]
+    │ │   ToolNode    │
+    │ │────────────── │
+    │ │ search_flights│
+    │ │ search_hotels │
+    │ │ calc_budget   │
+    └─┤               │
+      └───────────────┘
 ```
 
 **Luồng xử lý:**
@@ -76,6 +89,72 @@ class AgentState(TypedDict):
 | 8 | **Smart Flight Selection** | Chọn vé theo thứ tự ưu tiên: (1) lọc theo buổi, (2) rẻ nhất trong nhóm khả thi, (3) tiebreaker sau 07:00 nếu chênh < 200k. |
 | 9 | **Feasibility Check** | Kiểm tra trước khi đặt vé: `total_budget - flight_price >= nights × 200,000`. Loại bỏ vé không khả thi. |
 | 10 | **Dead-end Detection** | Nếu không có vé nào vượt feasibility check → thông báo ngân sách tối thiểu cần thiết và dừng, không tìm khách sạn. |
+
+---
+
+## Thiết Kế System Prompt
+
+System prompt được viết theo cấu trúc XML với 5 khối độc lập, mỗi khối có vai trò riêng biệt:
+
+```
+┌──────────────────┬────────────────────────────────────────────────────────────┐
+│ Khối             │ Vai trò                                                    │
+├──────────────────┼────────────────────────────────────────────────────────────┤
+│ <persona>        │ Định hình nhân cách: chuyên gia du lịch, lịch sự, trả lời │
+│                  │ bằng tiếng Việt, tự nhiên — không máy móc.                │
+├──────────────────┼────────────────────────────────────────────────────────────┤
+│ <rules>          │ Logic nghiệp vụ cốt lõi (xem chi tiết bên dưới).          │
+├──────────────────┼────────────────────────────────────────────────────────────┤
+│ <tools_          │ Mô tả ngắn 3 tools để LLM biết khi nào nên dùng cái nào. │
+│  instruction>    │ (Schema chi tiết do bind_tools() tự sinh — không cần lặp) │
+├──────────────────┼────────────────────────────────────────────────────────────┤
+│ <response_format>│ Quy định cấu trúc câu trả lời kế hoạch du lịch: 5 phần   │
+│                  │ theo thứ tự (chào → vé → khách sạn → ngân sách → tips).  │
+├──────────────────┼────────────────────────────────────────────────────────────┤
+│ <constraints>    │ Guardrail off-topic, bảo mật prompt, xử lý edge case.     │
+└──────────────────┴────────────────────────────────────────────────────────────┘
+```
+
+### Khối `<rules>` — Trung Tâm Điều Phối
+
+Đây là phần phức tạp nhất, kiểm soát toàn bộ hành vi của agent:
+
+**Rule 2 — WORKFLOW (4 bước bắt buộc cho full plan):**
+
+```
+Step 1: search_flights
+    │
+    ├─ (a) Class Filter     → economy mặc định; business nếu user yêu cầu
+    │                          hoặc budget rộng & user thiên về tiện nghi
+    ├─ (b) Feasibility Check (tính MENTALLY, không gọi tool)
+    │       remaining = budget - flight_price
+    │       viable nếu: remaining >= nights × 200,000
+    │       → nếu TẤT CẢ vé đều fail → DEAD END, dừng ngay
+    ├─ (c) Selection Priority
+    │       1. Lọc theo buổi (sáng/chiều/tối) nếu user đề cập
+    │       2. Chọn rẻ nhất trong nhóm viable
+    │       3. Tiebreaker: chênh < 200k → ưu tiên chuyến sau 07:00
+    └─ (e) Transparency    → luôn liệt kê các lựa chọn còn lại
+         │
+         ▼
+Step 2: calculate_budget(budget, "vé_máy_bay:{giá}")
+         │
+         ▼
+Step 3: search_hotels(city, max_price = remaining / nights)
+         │
+         ▼
+Step 4: calculate_budget(budget, "vé_máy_bay:{x}, khách_sạn:{y}")
+```
+
+**Tại sao thiết kế như vậy?**
+
+| Quyết định thiết kế | Lý do |
+|---|---|
+| Feasibility check ở Step 1, trước khi gọi tool tiếp theo | Tránh gọi `calculate_budget` → `search_hotels` rồi mới phát hiện ngân sách không đủ — lãng phí token và API call |
+| Feasibility check làm MENTALLY (không dùng tool) | Rule 3 bắt buộc dùng `calculate_budget` để tính, nhưng nếu áp dụng ở dead-end sẽ tạo vòng lặp thừa. Ghi rõ exception để tránh xung đột rule |
+| `search_hotels` nhận `max_price = remaining / nights` | Đảm bảo khách sạn trả về luôn nằm trong ngân sách còn lại, không cần lọc thêm sau |
+| Tách Rule 5 CLARIFICATION thành 3 nhánh | Flight-only và hotel-only không cần đủ 4 tham số → tránh agent hỏi thừa khi user chỉ muốn xem giá vé |
+| `flight_class` và `travel_date` là optional trong tìm vé đơn | Nếu không ghi rõ, LLM sẽ hỏi thêm ngày/hạng vé trước khi gọi tool, làm chậm trải nghiệm |
 
 ---
 
