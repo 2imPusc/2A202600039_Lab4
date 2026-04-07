@@ -1,7 +1,7 @@
 # TravelBuddy — Kết Quả Kiểm Thử
 
 **Ngày chạy:** 2026-04-07 16:38:57
-**Tổng số test:** 10 | **PASS:** 10 | **REVIEW:** 0
+**Tổng số test:** 10 (5 base + 5 implement) | **PASS:** 10 | **REVIEW:** 0
 
 ---
 
@@ -185,20 +185,20 @@ TravelBuddy đang suy nghĩ...
 
 TravelBuddy: Dưới đây là danh sách các chuyến bay từ Hà Nội đi Đà Nẵng vào thứ 7:
 
-1. **Vietnam Airlines (phổ thông)**: 
-   - Thời gian: 06:00 -> 07:20 
+1. **Vietnam Airlines (phổ thông)**:
+   - Thời gian: 06:00 -> 07:20
    - Giá: 1,740,000₫
 
-2. **Vietnam Airlines (thương gia)**: 
-   - Thời gian: 14:00 -> 15:20 
+2. **Vietnam Airlines (thương gia)**:
+   - Thời gian: 14:00 -> 15:20
    - Giá: 3,360,000₫
 
-3. **VietJet Air (phổ thông)**: 
-   - Thời gian: 08:30 -> 09:50 
+3. **VietJet Air (phổ thông)**:
+   - Thời gian: 08:30 -> 09:50
    - Giá: 1,068,000₫
 
-4. **Bamboo Airways (phổ thông)**: 
-   - Thời gian: 11:00 -> 12:20 
+4. **Bamboo Airways (phổ thông)**:
+   - Thời gian: 11:00 -> 12:20
    - Giá: 1,440,000₫
 
 Nếu bạn cần thêm thông tin hoặc muốn đặt vé, hãy cho tôi biết!
